@@ -4,10 +4,13 @@ Turn a **clean SteamOS OOBE repair image** into a **one-click USB installer**
 with **NVIDIA (RTX) 575 driver support baked in** — so you can install SteamOS
 onto any PC with a modern NVIDIA card, not just a Steam Deck.
 
-Built and known-good against **SteamOS 3.8**, which ships the
-**`nvidia-open` 575.64.05** driver (open kernel modules). The script does not
-pin a version — it builds whatever `nvidia-open-dkms` the image's own SteamOS
-branch serves, so a 3.8 image yields the 575.64.05 release.
+This is the **older-driver** edition — it works exactly like
+[`steamos-nvidia-installer`](https://github.com/28allday/steamos-nvidia-installer)
+but targets the **`nvidia-open` 575 series** (575.64.05, open kernel modules),
+as shipped by **SteamOS 3.8**. The script does not pin a version — it builds
+whatever `nvidia-open-dkms` the image's own SteamOS branch serves, so a 3.8
+image yields the 575.64.05 release. Need the newer drivers? Use
+`steamos-nvidia-installer` instead.
 
 ## Getting started
 
@@ -112,5 +115,8 @@ In one pass over a single copy of the image:
 
 ## Related
 
-Sibling project: [`steamos-nvidia-installer`](https://github.com/28allday/steamos-nvidia-installer)
-— the tracking-latest build. This repo is the **575-driver known-good** variant.
+This is a sibling of [**`steamos-nvidia-installer`**](https://github.com/28allday/steamos-nvidia-installer)
+— the main, current-driver build. **This repo works exactly the same way; it
+just supports older NVIDIA drivers** (the `nvidia-open` 575 series, as shipped
+by SteamOS 3.8). Use this one if you need the older driver; use
+`steamos-nvidia-installer` for the newer drivers.
