@@ -9,14 +9,60 @@ Built and known-good against **SteamOS 3.8**, which ships the
 pin a version — it builds whatever `nvidia-open-dkms` the image's own SteamOS
 branch serves, so a 3.8 image yields the 575.64.05 release.
 
+## Getting started
+
+You run the script **on an Arch-ish Linux host** (see [Requirements](#requirements)).
+It produces a USB image; you then flash that image and boot it on the target PC.
+
+**1. Get the script**
+
 ```bash
-sudo ./steamos-nvidia-installer.sh steamdeck-oobe-repair-<ver>.img
+git clone https://github.com/28allday/nvidia-steam-install.git
+cd nvidia-steam-install
+chmod +x steamos-nvidia-installer.sh
 ```
 
-Output: `<image>-nvidia-usbinstall.img` → `dd` it to a USB stick, boot the
-target machine (UEFI, Secure Boot **off**), double-click **"Install SteamOS
-(NVIDIA) to Hard Drive"**, pick a disk, done. The input image is copied first
-and never modified.
+**2. Download a clean SteamOS recovery image**
+
+Grab the official **SteamOS recovery (OOBE repair) image** from Valve:
+<https://store.steampowered.com/steamos/download/?ver=steamdeck&snr=>
+
+Unzip it so you have a `.img` file (e.g. `steamdeck-repair-<ver>.img`). Use a
+**clean, unmodified** image — not one that has already been patched.
+
+**3. Build the NVIDIA installer image**
+
+```bash
+sudo ./steamos-nvidia-installer.sh steamdeck-repair-<ver>.img
+```
+
+The input image is **copied first and never modified**. The build compiles the
+driver and takes a few minutes; it needs ~3 GB of free space for the work dir.
+Output lands next to the input as:
+
+```
+steamdeck-repair-<ver>-nvidia-usbinstall.img
+```
+
+**4. Flash it to a USB stick**
+
+Find your USB device with `lsblk`, then write the image (this **erases** the
+stick — double-check the device node):
+
+```bash
+sudo dd if=steamdeck-repair-<ver>-nvidia-usbinstall.img of=/dev/sdX bs=4M status=progress oflag=sync
+```
+
+(Or use a GUI tool such as GNOME Disks / balenaEtcher / Ventoy.)
+
+**5. Install on the target PC**
+
+Boot the USB stick on the target machine — **UEFI, with Secure Boot off**.
+On the desktop, double-click **"Install SteamOS (NVIDIA) to Hard Drive"**,
+pick a disk, and let it run. Done.
+
+> First boot of the installed system lands in the gamescope Steam setup. If it
+> black-screens: `Ctrl+Alt+F3` → `steamos-session-select plasma`.
 
 ## What it does
 
@@ -63,9 +109,6 @@ In one pass over a single copy of the image:
 - **Driver support:** `nvidia-open` covers **RTX 20xx (Turing) and newer only**
   — no Maxwell / Pascal / Volta.
 - **Target machine:** UEFI with **Secure Boot off**.
-
-First boot of an installed system lands in the gamescope Steam setup. If it
-black-screens: `Ctrl+Alt+F3` → `steamos-session-select plasma`.
 
 ## Related
 
